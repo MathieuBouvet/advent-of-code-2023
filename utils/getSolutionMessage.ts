@@ -1,9 +1,11 @@
+import { isPartTwo as ctx } from "./problemContext";
+
 function getSolutionMessage(
   challengeNumber: number,
-  isPartTwo: boolean
+  isPartTwo?: boolean
 ): string {
   return `The solution for challenge n°${challengeNumber} ${
-    isPartTwo ? "(part two)" : "(part one)"
+    isPartTwo ?? ctx() ? "(part two)" : "(part one)"
   } is:`;
 }
 
