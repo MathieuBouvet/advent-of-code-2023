@@ -1,8 +1,11 @@
-import { getMappingFns } from "./helpers/getMappingFns";
-import { Maps } from "./helpers/parseMaps";
+import { getEfficientMappingFns } from "./helpers/efficient/getEfficientMappingFns";
+import { MapsEfficient } from "./helpers/efficient/parseMapsEfficient";
+import { Range } from "./helpers/efficient/range";
 import { SeedRange } from "./helpers/parseSeedRanges";
+import { simpleFnPipe } from "../../utils/simpleFnPipe";
+import { pipe } from "../../utils/pipe";
 
-function solvePartTwo(maps: Maps, seedRanges: SeedRange[]): number {
+function solvePartTwo(maps: MapsEfficient, seedRanges: SeedRange[]): number {
   const {
     seedToSoil,
     soilToFertilizer,
@@ -11,25 +14,30 @@ function solvePartTwo(maps: Maps, seedRanges: SeedRange[]): number {
     lightToTemperature,
     temperatureToHumidity,
     humidityToLocation,
-  } = getMappingFns(maps);
-  const getLocation = (x: number) =>
-    humidityToLocation(
-      temperatureToHumidity(
-        lightToTemperature(
-          waterToLight(fertilizerToWater(soilToFertilizer(seedToSoil(x))))
-        )
-      )
-    );
+  } = getEfficientMappingFns(maps);
 
-  let minLocation = Infinity;
-  seedRanges.forEach(seedRange => {
-    for (let i = seedRange.start; i < seedRange.start + seedRange.length; i++) {
-      const result = getLocation(i);
-      if (result < minLocation) {
-        minLocation = result;
-      }
+  const getLocation = pipe(
+    seedToSoil,
+    soilToFertilizer,
+    fertilizerToWater,
+    waterToLight,
+    lightToTemperature,
+    temperatureToHumidity,
+    humidityToLocation
+  );
+
+  const seedRangesEfficient: Range[] = seedRanges.map(s => ({
+    start: s.start,
+    end: s.start + s.length - 1,
+  }));
+
+  const minLocation = getLocation(seedRangesEfficient).reduce((acc, l) => {
+    if (l.start < acc) {
+      return l.start;
     }
-  });
+    return acc;
+  }, Infinity);
+
   return minLocation;
 }
 
