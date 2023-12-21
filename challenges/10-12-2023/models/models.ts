@@ -1,8 +1,10 @@
 import { Tile } from "../helpers/parseTiles";
 
-export type TileType = "|" | "-" | "L" | "J" | "7" | "F" | "." | "S";
+export type TileType = "|" | "-" | "L" | "J" | "7" | "F" | "." | "S" | " ";
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 export type Position = { x: number; y: number };
+
+const allDirections: Direction[] = ["UP", "DOWN", "LEFT", "RIGHT"];
 
 function opposite(direction: Direction): Direction {
   switch (direction) {
@@ -43,4 +45,4 @@ function connectsFrom(tile: Tile, direction: Direction): boolean {
   return tile.connections.includes(opposite(direction));
 }
 
-export { opposite, movement, moved, connectsFrom };
+export { opposite, movement, moved, connectsFrom, allDirections };

@@ -1,37 +1,45 @@
 import { readFileSync } from "fs";
 import { Direction, Position, TileType } from "../models/models";
+import { areEquivalent } from "../../../utils/areEquivalent";
 
 export type Tile = {
   position: Position;
   connections: Direction[];
   type: TileType;
+  isOutsideLoop?: boolean;
+};
+
+const connectionMapping: Record<TileType, Direction[]> = {
+  "-": ["LEFT", "RIGHT"],
+  "7": ["LEFT", "DOWN"],
+  F: ["DOWN", "RIGHT"],
+  J: ["LEFT", "UP"],
+  L: ["UP", "RIGHT"],
+  "|": ["UP", "DOWN"],
+  ".": [],
+  " ": [],
+  S: [],
 };
 
 function checktypeValidity(type: string): asserts type is TileType {
-  if (!["|", "-", "L", "J", "7", "F", ".", "S"].includes(type)) {
+  if (!["|", "-", "L", "J", "7", "F", ".", "S", " "].includes(type)) {
     throw new Error(`tile ${type} unrocognized`);
   }
 }
 
 function getConnections(type: TileType): Direction[] {
-  switch (type) {
-    case "-":
-      return ["LEFT", "RIGHT"];
-    case "7":
-      return ["LEFT", "DOWN"];
-    case "F":
-      return ["DOWN", "RIGHT"];
-    case "J":
-      return ["LEFT", "UP"];
-    case "L":
-      return ["UP", "RIGHT"];
-    case "|":
-      return ["UP", "DOWN"];
-    case ".":
-      return [];
-    case "S":
-      return ["UP", "DOWN", "LEFT", "RIGHT"];
+  return connectionMapping[type] ?? ".";
+}
+
+function getTypeFromConnections(connections: Direction[]): TileType {
+  if (connections.length !== 2) {
+    return ".";
   }
+  const [type = "."] =
+    Object.entries(connectionMapping).find(([, c]) => {
+      return areEquivalent(connections, c);
+    }) ?? [];
+  return type as TileType;
 }
 
 function parseTiles(path: string): Tile[][] {
@@ -49,4 +57,4 @@ function parseTiles(path: string): Tile[][] {
   );
 }
 
-export { parseTiles };
+export { parseTiles, getTypeFromConnections };
