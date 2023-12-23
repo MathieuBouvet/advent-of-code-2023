@@ -1,5 +1,6 @@
 export type Position = { x: number; y: number };
 export type Cell<T> = Position & { value: T };
+export type NonNullableCell<T> = Cell<NonNullable<T>>;
 
 class Grid<T> {
   private elements: T[][];
