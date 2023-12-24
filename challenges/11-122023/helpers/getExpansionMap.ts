@@ -1,5 +1,4 @@
-import { Cell, Grid } from "../../../utils/Grid";
-import { i } from "../../../utils/expandedIterator";
+import { Grid } from "../../../utils/Grid";
 
 function getExpansionMap(galaxyMap: Grid<string>) {
   const columns = [...galaxyMap.columns()].reduce(

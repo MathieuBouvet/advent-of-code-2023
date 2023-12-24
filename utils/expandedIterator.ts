@@ -142,8 +142,8 @@ class ExpandedIterator<T> extends Function {
   }
 }
 
-function i<T>(iterable: Iterable<T>): ExpandedIterator<T> {
+function xI<T>(iterable: Iterable<T>): ExpandedIterator<T> {
   return new ExpandedIterator(iterable);
 }
 
-export { i };
+export { xI };
