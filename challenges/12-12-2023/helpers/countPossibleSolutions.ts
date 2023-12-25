@@ -1,3 +1,5 @@
+import { sum } from "../../../utils/sum";
+
 const cache: Record<string, number> = {};
 
 function getKey(
@@ -18,49 +20,54 @@ function countPossibleSolutions(
   const cacheKey = getKey(parts, groupDetails, seenBrokenPartsInCurrentGroup);
   const cached = cache[cacheKey];
   if (cached != null) {
+    // the problem can be solved in a reasonable time thanks to the cache, by skipping a lot of already computed recursions
     return cached;
   }
 
   if (parts.length === 0) {
-    const isValidSolution =
-      groupDetails.length === 0 && seenBrokenPartsInCurrentGroup === 0;
-    return isValidSolution ? 1 : 0;
-  }
-  const currentChar = parts.charAt(0);
-  const currentGroup = groupDetails[0];
-
-  const possibleChars = currentChar === "?" ? ["#", "."] : currentChar;
-  let possibleSolutions = 0;
-  for (const char of possibleChars) {
-    if (char === "#") {
-      // broken parts seen: count it and move to next char
-      possibleSolutions += countPossibleSolutions(
-        parts.slice(1),
-        groupDetails,
-        seenBrokenPartsInCurrentGroup + 1
-      );
+    // we reached the end of parts: ends recursion
+    if (groupDetails.length !== 0) {
+      // invalid solution since we were not able to close all groups
+      return 0;
     }
-    if (char === ".") {
-      if (seenBrokenPartsInCurrentGroup === 0) {
-        // no group has started yet: move to next char (exhausts "." between groups)
-        possibleSolutions += countPossibleSolutions(
+    return 1;
+  }
+
+  const currentPart = parts.charAt(0);
+  const brokenPartsInCurrentGroup = groupDetails[0];
+
+  // handle known parts or try both possibilities when reading an unknown part, which creates two "branches" of recursive calls (one for each possibility)
+  const partsToHandle = currentPart === "?" ? ["#", "."] : [currentPart];
+  const nbOfPossibleSolutions = sum(
+    // the sum of possible solutions for each parts to handle
+    partsToHandle.map(part => {
+      // will recursively count solutions and can stop recursion as soon as we know it cannot be a valid solution
+      if (part === "#") {
+        // broken parts seen: count it and move to next part
+        return countPossibleSolutions(
           parts.slice(1),
           groupDetails,
-          0
-        );
-      } else if (seenBrokenPartsInCurrentGroup === currentGroup) {
-        // the current "." mark the end of a valid group: current group can be closed
-        possibleSolutions += countPossibleSolutions(
-          parts.slice(1),
-          groupDetails.slice(1),
-          0
+          seenBrokenPartsInCurrentGroup + 1
         );
       }
-      // else: the current "." marks the end of an invalid group, we do nothing as this is not a valid solution
-    }
-  }
-  cache[cacheKey] = possibleSolutions;
-  return possibleSolutions;
+
+      if (seenBrokenPartsInCurrentGroup === 0) {
+        // no group has started yet: move to next part (used for exhausting "." between groups)
+        return countPossibleSolutions(parts.slice(1), groupDetails, 0);
+      }
+
+      if (seenBrokenPartsInCurrentGroup === brokenPartsInCurrentGroup) {
+        // the current "." mark the end of a valid group: move to next group and next part
+        return countPossibleSolutions(parts.slice(1), groupDetails.slice(1), 0);
+      }
+
+      // the current "." marks the end of an invalid group: this is not a valid solution. Stops the recursion early
+      return 0;
+    })
+  );
+
+  cache[cacheKey] = nbOfPossibleSolutions;
+  return nbOfPossibleSolutions;
 }
 
 export { countPossibleSolutions };
