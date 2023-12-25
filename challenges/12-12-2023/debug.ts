@@ -2,8 +2,9 @@
 
 import path from "path";
 import { parseSpringReports } from "./helpers/parseSpringReports";
-import { getMatchingCombinations } from "./helpers/getMatchingCombinations";
+import { countPossibleSolutions } from "./helpers/countPossibleSolutions";
 
 const reports = parseSpringReports(path.join(__dirname, "test/input.txt"));
-
-console.log(getMatchingCombinations(reports[4]));
+const report = reports[4];
+console.log(report.parts, report.groupDetails);
+console.log(countPossibleSolutions(report.parts + ".", report.groupDetails, 0));
