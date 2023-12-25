@@ -39,24 +39,24 @@ function countPossibleSolutions(
         groupDetails,
         seenBrokenPartsInCurrentGroup + 1
       );
-    } else {
-      if (seenBrokenPartsInCurrentGroup !== 0) {
-        if (seenBrokenPartsInCurrentGroup === currentGroup) {
-          // current group can be closed
-          possibleSolutions += countPossibleSolutions(
-            parts.slice(1),
-            groupDetails.slice(1),
-            0
-          );
-        }
-      } else {
-        // move to next char
+    }
+    if (char === ".") {
+      if (seenBrokenPartsInCurrentGroup === 0) {
+        // no group has started yet: move to next char (exhausts "." between groups)
         possibleSolutions += countPossibleSolutions(
           parts.slice(1),
           groupDetails,
           0
         );
+      } else if (seenBrokenPartsInCurrentGroup === currentGroup) {
+        // the current "." mark the end of a valid group: current group can be closed
+        possibleSolutions += countPossibleSolutions(
+          parts.slice(1),
+          groupDetails.slice(1),
+          0
+        );
       }
+      // else: the current "." marks the end of an invalid group, we do nothing as this is not a valid solution
     }
   }
   cache[cacheKey] = possibleSolutions;
