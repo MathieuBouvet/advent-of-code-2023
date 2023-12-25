@@ -14,6 +14,7 @@ import { challenge09 } from "./09-12-2023";
 import { challenge10 } from "./10-12-2023";
 import { challenge11 } from "./11-122023";
 import { challenge12 } from "./12-12-2023";
+import { challenge13 } from "./13-12-2023";
 
 const solutions: Solutions = {
   ["01"]: solution01,
@@ -28,6 +29,7 @@ const solutions: Solutions = {
   ["10"]: challenge10,
   ["11"]: challenge11,
   ["12"]: challenge12,
+  ["13"]: challenge13,
 };
 
 export { solutions };

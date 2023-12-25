@@ -19,4 +19,22 @@ function* range(
   }
 }
 
-export { range };
+function* rangeSize(
+  start: number,
+  size: number,
+  step: number = 1
+): Generator<number> {
+  const absoluteSize = Math.abs(size);
+  let yielded = 0;
+  let i = start;
+  while (true) {
+    if (yielded >= absoluteSize) {
+      return;
+    }
+    yield i;
+    yielded++;
+    i += step;
+  }
+}
+
+export { range, rangeSize };
