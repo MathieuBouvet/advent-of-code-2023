@@ -9,4 +9,18 @@ function hash(str: string): number {
   return current;
 }
 
-export { hash };
+function memoizedHash() {
+  const cache: Record<string, number> = {};
+
+  return (str: string): number => {
+    const cached = cache[str];
+    if (cached != null) {
+      return cached;
+    }
+    const result = hash(str);
+    cache[str] = result;
+    return result;
+  };
+}
+
+export { hash, memoizedHash };
