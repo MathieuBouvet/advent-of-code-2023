@@ -1,5 +1,6 @@
 import { Grid } from "../../utils/Grid";
 import { PrioritizedQueue } from "../../utils/PrioritizedQueue";
+import { PrioritizedQueueOptimized } from "../../utils/PrioritizedQueueOptimized";
 import {
   Direction,
   Position,
@@ -23,8 +24,8 @@ function solvePartOne(heatLosses: Grid<number>): TileMovement | null {
     y: heatLosses.height - 1,
   };
   const pathCostCache: Record<string, number> = {};
-  const queue = new PrioritizedQueue<TileMovement>(
-    (a, b) => a.totalHeatLoss - b.totalHeatLoss
+  const queue = new PrioritizedQueueOptimized<TileMovement>(
+    i => i.totalHeatLoss
   );
   queue.push({
     x: 0,
