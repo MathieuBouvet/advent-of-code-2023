@@ -55,8 +55,12 @@ class Grid<T> {
     return this;
   }
 
-  toString(): string {
-    return this.elements.map(lines => lines.join("")).join("\n");
+  toString(elementToString?: (el: T) => string): string {
+    return this.elements
+      .map(lines =>
+        lines.map(el => (elementToString ? elementToString(el) : el)).join("")
+      )
+      .join("\n");
   }
 }
 
