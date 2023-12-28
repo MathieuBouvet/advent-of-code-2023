@@ -3,10 +3,7 @@ import { moved, movement } from "../../10-12-2023/models/models";
 
 export type Direction = "UP" | "DOWN" | "LEFT" | "RIGHT";
 
-const getBeamName = idGenerator("beam");
-
 class Beam {
-  public name: string;
   public x: number;
   public y: number;
   public direction: Direction;
@@ -25,7 +22,6 @@ class Beam {
     this.x = x;
     this.y = y;
     this.direction = direction;
-    this.name = name ?? getBeamName();
   }
 
   move(): Beam {

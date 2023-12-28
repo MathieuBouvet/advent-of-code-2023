@@ -3,6 +3,8 @@
 import { solutions } from "./challenges";
 import { setPartTwo } from "./utils/problemContext";
 
+console.time("execution time");
+
 const challengeName = process.argv[2];
 const isPartTwo = process.argv[3] === "--part-two" || process.argv[3] === "-p2";
 if (isPartTwo) {
@@ -17,3 +19,4 @@ if (solution == null) {
 }
 
 solution(isPartTwo);
+console.timeEnd("execution time");

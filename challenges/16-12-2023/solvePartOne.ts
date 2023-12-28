@@ -4,14 +4,12 @@ import { Contraption } from "./models/Contraptions/Contraption";
 
 function solvePartOne(
   contraptions: Grid<Contraption>,
-  limit: number = Infinity
+  initialBeam: Beam = new Beam({ x: -1, y: 0, direction: "RIGHT" })
 ) {
-  let i = 0;
-  const defaultBeam = new Beam({ x: -1, y: 0, direction: "RIGHT" });
-  const beams = [defaultBeam];
+  const beams = [initialBeam];
 
   let beam: Beam | undefined;
-  while ((beam = beams.pop()) != null && i < limit) {
+  while ((beam = beams.pop()) != null) {
     beam.move();
     const { x, y } = beam;
     const contraption = contraptions.at({ x, y });
@@ -19,8 +17,6 @@ function solvePartOne(
       const beamsToAdd = contraption.beamReceived(beam);
       beams.push(...beamsToAdd);
     }
-
-    i++;
   }
 
   return [...contraptions.cells()].reduce((acc, cell) => {
