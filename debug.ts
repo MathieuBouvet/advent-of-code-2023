@@ -1,8 +1,11 @@
 #!/usr/bin/env -S node -r "ts-node/register"
 
-import { xI } from "./utils/expandedIterator";
-import { range } from "./utils/range";
+import { PrioritizedQueue } from "./utils/PrioritizedQueue";
 
-const testRange = xI(range(0, 9, 2));
+const queue = new PrioritizedQueue<number>((a, b) => a - b);
 
-console.log(...testRange());
+queue.push(45, 23, 9, 5, 6, 1, 25, 789, 45, 1, 369, 5, 4, 12, 0, 450);
+
+for (let item of queue.exhaust()) {
+  console.log(item);
+}
