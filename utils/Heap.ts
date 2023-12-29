@@ -48,20 +48,34 @@ class Heap<T> {
 
   private shiftDown() {
     let nodeIndex = TOP;
-    while (
-      (leftChildIndex(nodeIndex) < this.size &&
-        !this.isOrdered(nodeIndex, leftChildIndex(nodeIndex))) ||
-      (rightChildIndex(nodeIndex) < this.size &&
-        !this.isOrdered(nodeIndex, rightChildIndex(nodeIndex)))
-    ) {
-      const badlyOrderedNodeIndex =
-        rightChildIndex(nodeIndex) < this.size &&
-        this.isOrdered(rightChildIndex(nodeIndex), leftChildIndex(nodeIndex))
-          ? rightChildIndex(nodeIndex)
-          : leftChildIndex(nodeIndex);
-      this.swap(badlyOrderedNodeIndex, nodeIndex);
-      nodeIndex = badlyOrderedNodeIndex;
+    let childIndex;
+    while ((childIndex = this.childToSwap(nodeIndex)) !== null) {
+      this.swap(childIndex, nodeIndex);
+      nodeIndex = childIndex;
     }
+  }
+
+  private childToSwap(parentIndex: number): number | null {
+    const child = this.minChild(parentIndex);
+    if (child === null) {
+      return null;
+    }
+    return !this.isOrdered(parentIndex, child) ? child : null;
+  }
+
+  private minChild(parentIndex: number): number | null {
+    const left = leftChildIndex(parentIndex);
+    const right = rightChildIndex(parentIndex);
+    if (left > this.bottom && right > this.bottom) {
+      return null;
+    }
+    if (left > this.bottom) {
+      return right;
+    }
+    if (right > this.bottom) {
+      return left;
+    }
+    return this.isOrdered(left, right) ? left : right;
   }
 
   get size(): number {
