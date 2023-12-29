@@ -1,11 +1,21 @@
 #!/usr/bin/env -S node -r "ts-node/register"
 
-import { PrioritizedQueue } from "./utils/PrioritizedQueue";
+import { Heap } from "./utils/Heap";
 
-const queue = new PrioritizedQueue<number>((a, b) => a - b);
+const heap = new Heap<number>((a, b) => a - b);
 
-queue.push(45, 23, 9, 5, 6, 1, 25, 789, 45, 1, 369, 5, 4, 12, 0, 450);
+const pushDebug = (...all: number[]) => {
+  heap.debug();
+  heap.push(...all);
+  console.log(heap.toString());
+};
 
-for (let item of queue.exhaust()) {
-  console.log(item);
-}
+const popDebug = () => {
+  heap.debug();
+  console.log("popped", heap.pop());
+  console.log(heap.toString());
+};
+
+pushDebug(10, 2, 45, 7, 10, 12, 3);
+popDebug();
+popDebug();

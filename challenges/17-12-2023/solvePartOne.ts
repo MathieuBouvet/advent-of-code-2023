@@ -1,6 +1,5 @@
 import { Grid } from "../../utils/Grid";
-import { PrioritizedQueue } from "../../utils/PrioritizedQueue";
-import { PrioritizedQueueOptimized } from "../../utils/PrioritizedQueueOptimized";
+import { Heap } from "../../utils/Heap";
 import {
   Direction,
   Position,
@@ -24,8 +23,8 @@ function solvePartOne(heatLosses: Grid<number>): TileMovement | null {
     y: heatLosses.height - 1,
   };
   const pathCostCache: Record<string, number> = {};
-  const queue = new PrioritizedQueueOptimized<TileMovement>(
-    i => i.totalHeatLoss
+  const queue = new Heap<TileMovement>(
+    (a, b) => a.totalHeatLoss - b.totalHeatLoss
   );
   queue.push({
     x: 0,
@@ -49,7 +48,7 @@ function solvePartOne(heatLosses: Grid<number>): TileMovement | null {
           dir === tileMovement.direction
             ? tileMovement.stepTakenInDirection + 1
             : 1;
-        const cacheKey = `(${x},${y},${tileMovement.x},${tileMovement.y},${nextMoveStepTaken})`;
+        const cacheKey = `(${x},${y},${tileMovement.x},${tileMovement.y},${tileMovement.direction},${tileMovement.stepTakenInDirection})`;
         const cachedPathCost = pathCostCache[cacheKey] ?? Infinity;
 
         if (nextTotalHeatLoss < cachedPathCost) {
